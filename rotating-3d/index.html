@@ -1,0 +1,464 @@
+<!--<?php
+  include 'wxauth.php';
+$_info = get_object_vars($info);
+$json_info = json_encode($_info);
+//
+require_once "jssdk.php";
+$jssdk = new JSSDK("wx95721e36c26cc809", "d9366a267132f7e4c6ae46c5dc5306b3");
+$signPackage = $jssdk -> GetSignPackage();
+?>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>走马灯上赏年味，趣迎鸡年</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="resource/css/index.css">
+    <script src="resource/js/zepto.js"></script>
+    <script src="resource/js/css3d.js"></script>
+    <script src="resource/js/jstween.js"></script>
+</head>
+<body style="opacity: 0">
+
+<div id="main" style="position: absolute;left: 0px;top: 0px;width: 100%;">
+
+</div>
+<img src="resource/images/bg.jpg" style="width: 100%;">
+<img src="resource/images/music_s.png" class="close_bgm ">
+<img src="resource/images/text.png" id="img2">
+<!--<img src="resource/images/logo.png" id="img3">-->
+<img src="resource/images/al.png" id="img4">
+<div class="img">
+
+</div>
+<!--<div class="zhufu">
+    <div class="left_line"></div>
+    <div class="right_line"></div>
+    <div class="user">
+        <span class="name"><span>EG365</span></span>
+        <span class="head_span">恭祝 <img src="resource/images/logo.png" class="head_img"></span>
+        <span class="logo_text"><span>小范-范</span></span></span>
+    </div>
+    <div class="zhufu_text_div">
+        <span class="zhufu_text">鸡年吉祥美如意</span>！
+    </div>
+</div>-->
+<audio id="bgm_1" loop="loop">
+    <source src="resource/music/1.ogg" type="audio/ogg">
+    <source src="resource/music/1.mp3" type="audio/mpeg">
+</audio>
+<audio id="bgm_2" loop="loop">
+    <source src="resource/music/2.ogg" type="audio/ogg">
+    <source src="resource/music/2.mp3" type="audio/mpeg">
+</audio>
+<script>
+    if(document.addEventListener){
+                   document.addEventListener('WeixinJSBridgeReady', sendMessage, false);
+    } else if(document.attachEvent){
+        document.attachEvent('WeixinJSBridgeReady' , sendMessage); document.attachEvent('onWeixinJSBridgeReady' , sendMessage);
+
+    }
+    function sendMessage() {
+        document.getElementById("bgm_1").play();
+        document.getElementById("bgm_2").play();
+    }
+                function getPageValue(name) {
+                           var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                           var r = window.location.search.substr(1).match(reg);
+                           if (r != null) {
+                               console.log(decodeURI(r[2]));
+
+                               return decodeURI(r[2]);
+                           } else {
+                               return null;
+                           }
+                       }
+
+                $(".name span").text(getPageValue ("ver")||"EG365");
+
+    wx_name='fansiyao';
+/*  var wx_name =<?php echo $json_info; ?>;*/
+ var data=[
+     {text:'缝胸化吉~'},
+     {text:'鸡祥如意~'},
+     {text:' 鸡年大吉...吧'},
+     {text:'鸡变如神~'},
+     {text:'多贡献鸡DP~'},
+     {text:'2017天赐良鸡~'},
+     {text:'2017鸡智过人~'},
+     {text:'大鸡大利~'},
+     {text:'2017生鸡勃勃~'},
+     {text:'2017鸡多避凶~'},
+     {text:'鸡年叽叽叽叽叽叽~'},
+     {text:'当上老司鸡~'},
+     {text:' 找到印钞鸡~'},
+     {text:' 鸡占群胸~'},
+ ];
+ var _num=parseInt(Math.random()*14);
+ $(".zhufu").find(".zhufu_text").text(data[_num].text);
+ if(wx_name.nickname==getPageValue ("ver")){
+ $(".zhufu").find(".logo_text span").text("我自己");
+ }else{
+ $(".zhufu").find(".logo_text span").text(wx_name.nickname);
+ }
+
+ $(".head_img").attr("src",wx_name.headimgurl);
+window.onload = function() {
+
+        if($(".logo_text span").width()<100&&$(".name span").width()<100){
+            if(($(".logo_text span").width()-$(".name span").width())>0){
+                $(".left_line,.right_line").width(($(".zhufu").width()-$(".head_span").width()-($(".logo_text").width()*2))/2-5);
+            }else {
+                $(".left_line,.right_line").width(($(".zhufu").width()-$(".head_span").width()-($(".name").width()*2))/2-5);
+            }
+        }
+        if($(".logo_text span").width()>100){
+            $(".logo_text").width(100);
+            $(".left_line,.right_line").width(($(".zhufu").width()-$(".head_span").width()-($(".logo_text").width()*2))/2-5);
+        }
+        console.log($(".name span"));
+        if($(".name span").width()>100){
+            $(".name").width(100);
+            $(".left_line,.right_line").width(($(".zhufu").width()-$(".head_span").width()-($(".name").width()*2))/2-5);
+        }
+    };
+
+
+
+    //创建场景
+    var move_z,move_z_2 ,direction=0.5,flag,flag_2,music_flag=true;
+
+
+    move_z=0;
+    var s = new C3D.Stage();
+    s.size(window.innerWidth, window.innerHeight).material({
+
+    }).update();
+    document.getElementById('main').appendChild(s.el);
+
+    //创建1个立方体放入场景
+    var panoRect = {w: 750, h: 200};
+    var panoRect2 = {w: 760, h:100};
+
+    var panoRect3 = {w: 790, h: 100};
+
+    var panoRect4 = {w: 670, h: 60};
+    var bgData = [
+        {url: 'resource/images/11.gif'},
+        {url: 'resource/images/22.gif'},
+        {url: 'resource/images/33.gif'},
+        {url: 'resource/images/44.gif'},
+        {url: 'resource/images/55.gif'},
+        {url: 'resource/images/66.gif'},
+        {url: 'resource/images/77.gif'},
+        {url: 'resource/images/88.gif'},
+    ];
+  var bgData2 = [
+                {url: 'resource/images/img/1-2.jpg'},
+  {url: 'resource/images/img/2-2.jpg'},
+  {url: 'resource/images/img/3-2.jpg'},
+  {url: 'resource/images/img/4-2.jpg'},
+  {url: 'resource/images/img/5-2.jpg'},
+  {url: 'resource/images/img/6-2.jpg'},
+  {url: 'resource/images/img/7-2.jpg'},
+  {url: 'resource/images/img/8-2.jpg'},
+  ];
+  var bgData3 = [
+                {url: 'resource/images/img/1-1.jpg'},
+  {url: 'resource/images/img/2-1.jpg'},
+  {url: 'resource/images/img/3-1.jpg'},
+  {url: 'resource/images/img/4-1.jpg'},
+  {url: 'resource/images/img/5-1.jpg'},
+  {url: 'resource/images/img/6-1.jpg'},
+  {url: 'resource/images/img/7-1.jpg'},
+  {url: 'resource/images/img/8-1.jpg'},
+  ];
+    var bgData4 = [
+        {url: 'resource/images/66.png'},
+        {url: 'resource/images/66.png'},
+        {url: 'resource/images/66.png'},
+        {url: 'resource/images/66.png'},
+        {url: 'resource/images/66.png'},
+        {url: 'resource/images/66.png'},
+        {url: 'resource/images/66.png'},
+        {url: 'resource/images/66.png'},
+    ];
+    function createPano(imgs, rect,type) {
+        var _len = imgs.length;
+        var _step = rect.w / _len;
+        var _radius = Math.floor(_step / 2 / Math.tan(Math.PI / _len));
+
+        var _sp = new C3D.Sprite();
+        for (var i = 0; i < _len; i++) {
+            var _p = new C3D.Plane();
+            var _r = 360 / _len * i;
+            var _a = Math.PI * 2 / _len * i;
+
+            if(type==0){
+                _p.size(_step, rect.h).position(Math.sin(_a) * _radius, 0, -Math.cos(_a) * _radius).rotation(0, -_r+270, 0).material({
+                    image: imgs[i].url,
+                    repeat: 'no-repeat',
+                    size:'100% 100%',
+                    bothsides: true,
+                }).update();
+            }else {
+                _p.size(_step, rect.h).position(Math.sin(_a) * _radius, 0, -Math.cos(_a) * _radius).rotation(0, -_r+180, 0).material({
+                    image: imgs[i].url,
+                    repeat: 'no-repeat',
+                    size:'100% auto',
+                    bothsides: true,
+                }).update();
+            }
+            _p.on('tap',function () {  //点击放大缩小事件
+                direction=0;
+            });
+            _p.on('touchstart',function (e) {
+                flag=false;
+                touch_start=e.changedTouches[0].pageX;
+            });
+            _p.on('touchend',function (e) {
+
+                flag_2=false;
+                move_z=0;
+                touch_end=e.changedTouches[0].pageX;
+                console.log(touch_end-touch_start);
+                if(touch_end-touch_start>20){
+                    direction=1;
+                    flag=true;
+                }else if(touch_end-touch_start<-20) {
+                   direction=-1;
+                    flag=true;
+                }
+            });
+            _sp.addChild(_p);
+        }
+
+        return _sp;
+    }
+    var pano = this.createPano(bgData, panoRect,1);
+    var pano2=this.createPano(bgData2, panoRect2,1);
+    var pano3=this.createPano(bgData3, panoRect3,1);
+    var pano4=this.createPano(bgData4, panoRect4,0);
+    pano.position(0, -40, -430).updateT();
+    pano2.position(0, 60, -430).updateT();
+    pano3.position(0, -110, -430).updateT();
+    pano4.position(0, -155, -430).updateT();
+    pano4.rotation(0,-23,0).update();
+    s.addChild(pano);
+    s.addChild(pano2);
+    s.addChild(pano3);
+    s.addChild(pano4);
+    //创建平面图片文字
+    var img2 = new C3D.Plane({el:document.getElementById('img2')});
+    img2.name('img2').size(window.innerWidth*0.6,'auto').position(0, 200, 0).rotation(0, 0, 0).update();
+    s.addChild(img2);
+    //创建平面图片logo
+    var img3 = new C3D.Plane({el:document.getElementById('img3')});
+    img3.name('img3').size(window.innerWidth*0.12,'auto').position(0, 300, 0).rotation(0, 0, 0).update();
+    s.addChild(img3);
+    var img4 = new C3D.Plane({el:document.getElementById('img4')});
+    img4.name('img4').size(window.innerWidth*0.4,'auto').position(0, 0, 0).rotation(0, 0, 0).update();
+    s.addChild(img4);
+
+    img2.position(0, 130, -350).updateT();
+    img3.position(-100, -225, -350).updateT();
+    img4.position(0, 70, -350).updateT();
+    //响应屏幕调整尺寸
+    function resize() {
+        s.size(window.innerWidth, window.innerHeight).update();
+    }
+    window.onresize = function () {
+        resize();
+    };
+    resize();
+
+    //刷新场景
+    requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame ||
+            function (callback) {
+                setTimeout(callback, 1000 /500);
+            };
+
+    function go() {
+            setTimeout(function () {
+                if(parseInt(pano.rotationY)%45==0&&flag==true){
+                    direction=0;
+
+
+                }
+            },100);
+
+            pano.rotate(0, direction, 0).updateT();
+            pano2.rotate(0, direction, 0).updateT();
+            pano3.rotate(0, direction, 0).updateT();
+            pano4.rotate(0, direction, 0).updateT();
+
+        requestAnimationFrame(go);
+
+    }
+
+    requestAnimationFrame(go);
+    function go2() {
+        if(s.camera.z<-455){
+            s.camera.z=-455;
+            s.camera.y=-57;
+        }else if(s.camera.z>0&&flag_2==true&&flag==false){
+            s.camera.z=0;
+            s.camera.y=0;
+
+            direction=-1
+        }else {
+            s.camera.move(0, 57/455*move_z, move_z).update();
+        }
+        requestAnimationFrame(go2);
+    }
+    requestAnimationFrame(go2);
+//loading
+    function img(data) {
+        for(var i=0;i<data.length;i++){
+            var _src=data[i].url;
+            var new_img='<img src="'+_src+'">';
+            $(".img").append(new_img);
+        }
+    }
+    img(bgData);
+    img(bgData2);
+    img(bgData3);
+    img(bgData4);
+    var imgList = $("img");
+    var timer5 = setInterval(function(){
+        var _flag = true;
+        imgList.each(function(index,ele){
+            if($(ele).height() == 0){
+                _flag = false;
+            }
+        });
+        if(_flag){
+            $("body").css("opacity","1");
+            $(".img").hide();
+
+
+            sendMessage();
+            if(document.addEventListener){
+                document.addEventListener('WeixinJSBridgeReady', sendMessage, false); }
+            else if(document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady' , sendMessage); document.attachEvent('onWeixinJSBridgeReady' , sendMessage);
+            }
+            function sendMessage() {
+                document.getElementById("bgm_1").play();
+                document.getElementById("bgm_2").play();
+            }
+
+            clearInterval(timer5);
+        }
+
+    },50);
+    //关闭背景音乐
+    $(".close_bgm").click(function () {
+    music_flag=false;
+        if(document.getElementById("bgm_1").paused){
+            $(this).attr("src","resource/images/music_s.png")
+            document.getElementById("bgm_1").play();
+            document.getElementById("bgm_2").play();
+
+        }else {
+          $(this).attr("src","resource/images/music_p.png")
+            document.getElementById("bgm_1").pause();
+            document.getElementById("bgm_2").pause();
+        }
+
+    });
+
+
+</script>
+<!-- 微信API -->
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+     var info=wx_name.nickname;
+     var GLOBAL_URL = 'http://md.eg365.cn/fansiyao/chunjie/';
+     var _link = GLOBAL_URL + 'index.php?ver=' + info;
+        var share_title = '走马灯上赏年味，趣迎鸡年';
+        var share_desc = '大红灯笼高高挂 张灯结彩迎鸡年';
+        var imgUrl = GLOBAL_URL + 'resource/images/share.jpg';
+        wx.config({
+            debug: false,
+            appId: '<?php echo $signPackage["appId"];?>',
+            timestamp: '<?php echo $signPackage["timestamp"];?>',
+            nonceStr: '<?php echo $signPackage["nonceStr"];?>',
+            signature: '<?php echo $signPackage["signature"];?>',
+            jsApiList: [
+                'onMenuShareTimeline',
+                'onMenuShareAppMessage',
+                'onMenuShareQQ',
+                'onMenuShareWeibo',
+                'onMenuShareQZone'
+            ]
+        });
+
+        wx.ready(function() {
+            wx.checkJsApi({
+                jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo'],
+                // 需要检测的JS接口列表，所有JS接口列表见附录2,
+                success: function(res) {
+                    // 以键值对的形式返回，可用的api值true，不可用为false
+                    // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+                }
+            });
+
+            //分享到朋友圈
+            wx.onMenuShareTimeline({
+                title: share_title, // 分享标题
+                link: _link, // 分享链接
+                imgUrl: imgUrl, // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: function() {
+
+                },
+                cancel: function() {
+
+                }
+            });
+
+            //分享给朋友
+            wx.onMenuShareAppMessage({
+                title: share_title, // 分享标题
+                desc: share_desc, // 分享描述
+                link: _link, // 分享链接
+                imgUrl: imgUrl, // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: function() {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function() {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+
+            //分享到QQ
+            wx.onMenuShareQQ({
+                title: share_title, // 分享标题
+                desc: share_desc, // 分享描述
+                link: _link, // 分享链接
+                imgUrl: imgUrl, // 分享图标
+                success: function() {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function() {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+
+</script>
+</body>
